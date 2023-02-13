@@ -1,0 +1,47 @@
+{"Time":"2023-02-10T23:33:18.9635424+01:00","Action":"start","Package":"samplePackage/pkg/util/landscape"}
+{"Time":"2023-02-10T23:33:19.3782602+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit"}
+{"Time":"2023-02-10T23:33:19.3782602+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit","Output":"=== RUN   TestLandscapeUnit\n"}
+{"Time":"2023-02-10T23:33:19.3787898+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test2"}
+{"Time":"2023-02-10T23:33:19.3787898+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test2","Output":"=== RUN   TestLandscapeUnit/Simple_test2\n"}
+{"Time":"2023-02-10T23:33:19.3793297+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test3"}
+{"Time":"2023-02-10T23:33:19.3793297+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test3","Output":"=== RUN   TestLandscapeUnit/Simple_test3\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit","Output":"--- PASS: TestLandscapeUnit (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test2","Output":"    --- PASS: TestLandscapeUnit/Simple_test2 (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"pass","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test2","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test3","Output":"    --- PASS: TestLandscapeUnit/Simple_test3 (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"pass","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit/Simple_test3","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"pass","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeUnit","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration","Output":"=== RUN   TestLandscapeIntegration\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test","Output":"=== RUN   TestLandscapeIntegration/222Simple_test\n"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test"}
+{"Time":"2023-02-10T23:33:19.3798645+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"=== RUN   TestLandscapeIntegration/222Simple_test/Simple_test\n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"    testSystem_test.go:70: \n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \tError Trace:\tC:\\SampleGo\\pkg\\util\\landscape\\testLandscape_test.go:64\n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \tError:      \tNot equal: \n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \texpected: \"SUCCESS\"\n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \tactual  : \"SUCCESS\"\n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t\n"}
+{"Time":"2023-02-10T23:33:19.3827477+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \tDiff:\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t--- Expected\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t+++ Actual\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t@@ -1 +1 @@\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t-FAIL\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \t            \t+FAIL\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \tTest:       \tTestLandscapeIntegration/222Simple_test/Simple_test\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        \tMessages:   \tMap is incorrect\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"run","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_testZZZZ"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_testZZZZ","Output":"=== RUN   TestLandscapeIntegration/222Simple_test/Simple_testZZZZ\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration","Output":"--- FAIL: TestLandscapeIntegration (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.383315+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test","Output":"    --- FAIL: TestLandscapeIntegration/222Simple_test (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3849991+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Output":"        --- FAIL: TestLandscapeIntegration/222Simple_test/Simple_test (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3849991+01:00","Action":"fail","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_test","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3849991+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_testZZZZ","Output":"        --- PASS: TestLandscapeIntegration/222Simple_test/Simple_testZZZZ (0.00s)\n"}
+{"Time":"2023-02-10T23:33:19.3849991+01:00","Action":"pass","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test/Simple_testZZZZ","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3866304+01:00","Action":"fail","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration/222Simple_test","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3866304+01:00","Action":"fail","Package":"samplePackage/pkg/util/landscape","Test":"TestLandscapeIntegration","Elapsed":0}
+{"Time":"2023-02-10T23:33:19.3866304+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Output":"FAIL\n"}
+{"Time":"2023-02-10T23:33:19.4014072+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Output":"\tsamplePakacge/pkg/util/landscape\tcoverage: 59.6% of statements\n"}
+{"Time":"2023-02-10T23:33:19.4879307+01:00","Action":"output","Package":"samplePackage/pkg/util/landscape","Output":"FAIL\tsamplePakacge/pkg/util/landscape\t0.509s\n"}
+{"Time":"2023-02-10T23:33:19.4884379+01:00","Action":"fail","Package":"samplePackage/pkg/util/landscape","Elapsed":0.525}

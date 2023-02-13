@@ -1,6 +1,6 @@
 // Code generated for package main by go-bindata DO NOT EDIT. (@generated)
 // sources:
-// report-template.html
+// reportTemplate.html
 package assets
 
 import (
@@ -82,7 +82,7 @@ var _reportTemplateHtml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xa4\x
 func reportTemplateHtmlBytes() ([]byte, error) {
 	return bindataRead(
 		_reportTemplateHtml,
-		"report-template.html",
+		"reportTemplate.html",
 	)
 }
 
@@ -92,7 +92,7 @@ func reportTemplateHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "report-template.html", size: 3366, mode: os.FileMode(420), modTime: time.Unix(1653785133, 0)}
+	info := bindataFileInfo{name: "reportTemplate.html", size: 3366, mode: os.FileMode(420), modTime: time.Unix(1653785133, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -149,7 +149,7 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"report-template.html": reportTemplateHtml,
+	"reportTemplate.html": reportTemplateHtml,
 }
 
 // AssetDir returns the file names below a certain
@@ -193,7 +193,7 @@ type bintree struct {
 }
 
 var _bintree = &bintree{nil, map[string]*bintree{
-	"report-template.html": &bintree{reportTemplateHtml, map[string]*bintree{}},
+	"reportTemplate.html": &bintree{reportTemplateHtml, map[string]*bintree{}},
 }}
 
 // RestoreAsset restores an asset under the given directory

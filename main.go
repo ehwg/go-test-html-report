@@ -5,15 +5,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/Thatooine/go-test-html-report/assets"
-	"github.com/rs/zerolog/log"
-	"github.com/spf13/cobra"
 	"html/template"
 	"io/ioutil"
 	"math"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/SAP/jenkins-library/pkg/log"
+	"github.com/ehwg/goTestHtmlReport/assets"
+	"github.com/spf13/cobra"
 )
 
 type GoTestJsonRowData struct {
@@ -35,19 +36,23 @@ type ProcessedTestdata struct {
 }
 
 type PackageDetails struct {
-	Name        string
-	ElapsedTime float64
-	TimeSymbol  string
-	Status      string
-	Coverage    string
+	Name          string
+	ElapsedTime   float64
+	TimeSymbol    string
+	Status        string
+	Coverage      string
+	NumberOfTests int
 }
 
 type TestDetails struct {
-	PackageName string
-	Name        string
-	ElapsedTime float64
-	TimeSymbol  string
-	Status      string
+	PackageName   string
+	RootTest      string
+	ParentTest    string
+	Name          string
+	ElapsedTime   float64
+	TimeSymbol    string
+	Status        string
+	NumberOfTests int
 }
 
 type TestOverview struct {
@@ -67,9 +72,9 @@ var outputDirectory string
 
 func initCommand() *cobra.Command {
 	var rootCmd = &cobra.Command{
-		Use:   "go-test-html-report",
-		Long:  "go-test-html-report generates a html report of go-test logs",
-		Short: "go-test-html-report generates a html report of go-test logs",
+		Use:   "goTestHtmlReport",
+		Long:  "goTestHtmlReport generates a html report of go-test logs",
+		Short: "goTestHtmlReport generates a html report of go-test logs",
 		RunE: func(cmd *cobra.Command, args []string) (e error) {
 			testData := make([]GoTestJsonRowData, 0)
 
@@ -77,7 +82,7 @@ func initCommand() *cobra.Command {
 			if file != "" {
 				fileLogData, err := ReadLogsFromFile(file)
 				if err != nil {
-					log.Error().Err(err).Msg("error reading logs from a file")
+					log.Entry().Info("error reading logs from a file")
 					return err
 				}
 
@@ -85,7 +90,7 @@ func initCommand() *cobra.Command {
 			} else {
 				stdInLogData, err := ReadLogsFromStdIn()
 				if err != nil {
-					log.Error().Err(err).Msg("error reading logs from standard input ")
+					log.Entry().Info("error reading logs from standard input ")
 					return err
 				}
 
@@ -94,7 +99,7 @@ func initCommand() *cobra.Command {
 
 			processedTestdata, err := ProcessTestData(testData)
 			if err != nil {
-				log.Error().Err(err).Msg("error processing test logs")
+				log.Entry().Info("error processing test logs")
 				return err
 			}
 
@@ -106,11 +111,11 @@ func initCommand() *cobra.Command {
 				processedTestdata.PackageDetailsMap,
 			)
 			if err != nil {
-				log.Error().Err(err).Msg("error generating report html")
+				log.Entry().Info("error generating report html")
 				return err
 			}
 
-			log.Info().Msgf("Report generated successfully")
+			log.Entry().Info("Test report generated successfully")
 			return nil
 		},
 	}
@@ -132,15 +137,16 @@ func initCommand() *cobra.Command {
 }
 
 func ReadLogsFromFile(fileName string) (*[]GoTestJsonRowData, error) {
-	file, err := os.Open(fileName)
+
+	file, err := os.Open("C:\\Users\\d022276\\GO\\src\\go-test-html-report\\sample\\gocoverageTest.json")
 	if err != nil {
-		log.Error().Err(err).Msg("error opening file")
+		log.Entry().Info("error opening file")
 		return nil, err
 	}
 	defer func() {
 		err := file.Close()
 		if err != nil {
-			log.Error().Err(err).Msg("error closing file")
+			log.Entry().Info("error closing file")
 		}
 	}()
 
@@ -152,14 +158,14 @@ func ReadLogsFromFile(fileName string) (*[]GoTestJsonRowData, error) {
 		// unmarshall each line to GoTestJsonRowData
 		err = json.Unmarshal([]byte(scanner.Text()), &row)
 		if err != nil {
-			log.Error().Err(err).Msg("error unmarshalling go test logs")
+			log.Entry().Info("error unmarshalling go test logs")
 			return nil, err
 		}
 		rowData = append(rowData, row)
 	}
 
 	if err = scanner.Err(); err != nil {
-		log.Error().Err(err).Msg("error scanning file")
+		log.Entry().Info("error scanning file")
 		return nil, err
 	}
 
@@ -175,13 +181,13 @@ func ReadLogsFromStdIn() (*[]GoTestJsonRowData, error) {
 		// unmarshall each line into GoTestJsonRowData
 		err := json.Unmarshal([]byte(scanner.Text()), &row)
 		if err != nil {
-			log.Error().Err(err).Msg("error unmarshalling the test logs")
+			log.Entry().Info("error unmarshalling the test logs")
 			return nil, err
 		}
 		rowData = append(rowData, row)
 	}
 	if err := scanner.Err(); err != nil {
-		log.Error().Err(err).Msg("error with stdin scanner")
+		log.Entry().Info("error with stdin scanner")
 		return nil, err
 	}
 
@@ -190,6 +196,7 @@ func ReadLogsFromStdIn() (*[]GoTestJsonRowData, error) {
 
 func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 	packageDetailsMap := map[string]PackageDetails{}
+	testDetailsOutput := map[string][]string{}
 	for _, r := range rowData {
 		if r.Test == "" {
 			if r.Action == "fail" || r.Action == "pass" || r.Action == "skip" {
@@ -202,22 +209,33 @@ func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 					Coverage:    packageDetailsMap[r.Package].Coverage,
 				}
 			}
-
-			// get package coverage data
 			if r.Action == "output" {
-				// check if output contains coverage data
 				coverage := "-"
 				if strings.Contains(r.Output, "coverage") && strings.Contains(r.Output, "%") {
 					coverage = r.Output[strings.Index(r.Output, ":")+1 : strings.Index(r.Output, "%")+1]
 				}
 				elapsedTime, timeSymbol := formatTimeDisplay(packageDetailsMap[r.Package].ElapsedTime)
-				packageDetailsMap[r.Package] = PackageDetails{
-					Name:        packageDetailsMap[r.Package].Name,
-					ElapsedTime: elapsedTime,
-					TimeSymbol:  timeSymbol,
-					Status:      packageDetailsMap[r.Package].Status,
-					Coverage:    coverage,
+
+				packageDetails := packageDetailsMap[r.Package]
+				if elapsedTime != 0 {
+					packageDetails.ElapsedTime = elapsedTime
 				}
+				if timeSymbol != "" {
+					packageDetails.TimeSymbol = timeSymbol
+				}
+				if coverage != "-" {
+					packageDetails.Coverage = coverage
+				}
+
+				packageDetailsMap[r.Package] = packageDetails
+			}
+		} else {
+			if r.Output != "" && r.Output[0:3] != "===" && r.Output[0:3] != "---" {
+				testDetailsOutputSingle := testDetailsOutput[r.Test]
+				testDetailsOutputSingle = append(
+					testDetailsOutputSingle,
+					r.Output)
+				testDetailsOutput[r.Test] = testDetailsOutputSingle
 			}
 		}
 	}
@@ -226,11 +244,19 @@ func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 	testCasesSlice := make([]TestDetails, 0)
 	passedTests := 0
 	failedTests := 0
+	passedTestss := 0
 	for _, r := range rowData {
 		if r.Test != "" {
 			testNameSlice := strings.Split(r.Test, "/")
 
 			// if testNameSlice is not equal 1 then we assume we have a test case information. Record test case info
+
+			if len(testNameSlice) == 2 {
+				passedTestss = 2
+			}
+			if len(testNameSlice) == 3 && (r.Action == "fail" || r.Action == "pass") {
+				passedTestss = 3
+			}
 			if len(testNameSlice) != 1 {
 				if r.Action == "fail" || r.Action == "pass" {
 					elapsedTime, timeSymbol := formatTimeDisplay(r.Elapsed)
@@ -238,6 +264,8 @@ func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 						testCasesSlice,
 						TestDetails{
 							PackageName: r.Package,
+							RootTest:    testNameSlice[0],
+							ParentTest:  testNameSlice[len(testNameSlice)-2],
 							Name:        r.Test,
 							ElapsedTime: elapsedTime,
 							TimeSymbol:  timeSymbol,
@@ -260,6 +288,8 @@ func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 					testSuiteSlice,
 					TestDetails{
 						PackageName: r.Package,
+						RootTest:    testNameSlice[0],
+						ParentTest:  testNameSlice[len(testNameSlice)-1],
 						Name:        r.Test,
 						ElapsedTime: elapsedTime,
 						TimeSymbol:  timeSymbol,
@@ -307,6 +337,8 @@ func ProcessTestData(rowData []GoTestJsonRowData) (*ProcessedTestdata, error) {
 	}
 	testDate := rowData[0].Time.Format(time.RFC850)
 
+	log.Entry().Info(passedTestss)
+
 	return &ProcessedTestdata{
 		TotalTestTime:     totalTestTime,
 		TestDate:          testDate,
@@ -325,16 +357,16 @@ func GenerateHTMLReport(totalTestTime, testDate string, failedTests, passedTests
 
 	packagesEl, _ := generatePackageDetailsHTMLElements(*testSuitesEl, packageDetailsMap)
 
-	reportTemplate := template.New("report-template.html")
-	reportTemplateData, err := assets.Asset("report-template.html")
+	reportTemplate := template.New("reportTemplate.html")
+	reportTemplateData, err := assets.Asset("reportTemplate.html")
 	if err != nil {
-		log.Error().Err(err).Msg("error retrieving report-template.html")
+		log.Entry().Info("error retrieving reportTemplate.html")
 		return err
 	}
 
 	report, err := reportTemplate.Parse(string(reportTemplateData))
 	if err != nil {
-		log.Error().Err(err).Msg("error parsing report-template.html")
+		log.Entry().Info("error parsing reportTemplate.html")
 		return err
 	}
 
@@ -357,7 +389,7 @@ func GenerateHTMLReport(totalTestTime, testDate string, failedTests, passedTests
 		},
 	)
 	if err != nil {
-		log.Error().Err(err).Msg("error applying report-template.html")
+		log.Entry().Info("error applying reportTemplate.html")
 		return err
 	}
 
@@ -371,7 +403,7 @@ func GenerateHTMLReport(totalTestTime, testDate string, failedTests, passedTests
 	// write the whole body at once
 	err = ioutil.WriteFile(path, processedTemplate.Bytes(), 0644)
 	if err != nil {
-		log.Error().Err(err).Msg("error writing report.html file")
+		log.Entry().Info("error writing report.html file")
 		return err
 	}
 
@@ -391,7 +423,7 @@ func generateTestCaseHTMLElements(testsLogOverview []TestOverview) (*map[string]
 									`
 			testCaseTemplate, err := template.New("testCase").Parse(string(testCaseCard))
 			if err != nil {
-				log.Error().Err(err).Msg("error parsing test case template")
+				log.Entry().Info("error parsing test case template")
 				return nil, err
 			}
 
@@ -403,7 +435,7 @@ func generateTestCaseHTMLElements(testsLogOverview []TestOverview) (*map[string]
 			})
 
 			if err != nil {
-				log.Error().Err(err).Msg("error applying test case template")
+				log.Entry().Info("error applying test case template")
 				return nil, err
 			}
 			if testCaseDetails.Status == "pass" {
@@ -427,9 +459,8 @@ func generateTestCaseHTMLElements(testsLogOverview []TestOverview) (*map[string]
 						template.HTML(processedTestCaseTemplate.Bytes()),
 					),
 				)
-
 			}
-			testCasesCardsMap[testSuite.TestSuite.Name+"-"+testSuite.TestSuite.PackageName] = append(testCasesCardsMap[testSuite.TestSuite.Name], string(testCaseCard))
+			testCasesCardsMap[testSuite.TestSuite.Name+"-"+testSuite.TestSuite.PackageName] = append(testCasesCardsMap[testSuite.TestSuite.Name+"-"+testSuite.TestSuite.PackageName], string(testCaseCard))
 		}
 	}
 
@@ -451,7 +482,7 @@ func generateTestSuiteHTMLElements(testLogOverview []TestOverview, testCaseHTMLC
 									`
 		testCaseTemplate, err := template.New("testSuite").Parse(collapsibleHeadingTemplate)
 		if err != nil {
-			log.Error().Err(err).Msg("error parsing test case template")
+			log.Entry().Info("error parsing test case template")
 			return nil, err
 		}
 
@@ -462,7 +493,7 @@ func generateTestSuiteHTMLElements(testLogOverview []TestOverview, testCaseHTMLC
 			"timeSymbol":  fmt.Sprintf("%s", testSuite.TestSuite.TimeSymbol),
 		})
 		if err != nil {
-			log.Error().Err(err).Msg("error applying test case template")
+			log.Entry().Info("error applying test case template")
 			return nil, err
 		}
 
@@ -536,7 +567,7 @@ func generatePackageDetailsHTMLElements(testSuiteOverview map[string][]string, p
 
 		packageInfoTemplate, err := template.New("packageInfoTemplate").Parse(string(collapsibleHeadingTemplate))
 		if err != nil {
-			log.Error().Err(err).Msg("error parsing package info template")
+			log.Entry().Info("error parsing package info template")
 			os.Exit(1)
 		}
 		var processedPackageTemplate bytes.Buffer
@@ -547,7 +578,7 @@ func generatePackageDetailsHTMLElements(testSuiteOverview map[string][]string, p
 			"coverage":    v.Coverage,
 		})
 		if err != nil {
-			log.Error().Err(err).Msg("error applying package info template")
+			log.Entry().Info("error applying package info template")
 			os.Exit(1)
 		}
 
